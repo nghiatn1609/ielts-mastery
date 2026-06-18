@@ -3,9 +3,8 @@
 import { useState } from "react";
 import * as mammoth from "mammoth";
 import { getGenerativeModel } from "firebase/ai";
-import { ai, db, storage } from "@/lib/firebase/config";
+import { ai, db } from "@/lib/firebase/config";
 import { collection, addDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Loader2, Upload, FileText, CheckCircle2, Headphones, BookOpen } from "lucide-react";
 
 export default function AIUploadComponent() {
@@ -25,13 +24,23 @@ export default function AIUploadComponent() {
     try {
       let audioUrl = "";
       if (testType === 'LISTENING' && audioFile) {
-        setStatus("Đang upload file Audio lên Firebase Storage...");
+        setStatus("Đang upload file Audio lên Cloudinary...");
         try {
-          const uniqueName = `${Date.now()}_${audioFile.name.replace(/\s+/g, '_')}`;
-          const storageRef = ref(storage, `uploads/${uniqueName}`);
+          const formData = new FormData();
+          formData.append("file", audioFile);
+          formData.append("upload_preset", "ielts_upload");
           
-          await uploadBytes(storageRef, audioFile);
-          audioUrl = await getDownloadURL(storageRef);
+          const uploadRes = await fetch("https://api.cloudinary.com/v1_1/duhmfjuxm/video/upload", {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (!uploadRes.ok) {
+            throw new Error(`Cloudinary upload failed: ${uploadRes.statusText}`);
+          }
+          
+          const uploadData = await uploadRes.json();
+          audioUrl = uploadData.secure_url;
           
         } catch (uploadErr) {
            console.error(uploadErr);
