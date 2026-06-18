@@ -106,7 +106,7 @@ export default function AnalyticsPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
         <div>
           <h1 className="h1 mb-2">Phân Tích Kết Quả</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Xin chào, {user.displayName}!</p>
+          <p style={{ color: 'var(--text-muted)' }}>Xin chào, {user?.displayName}!</p>
         </div>
       </div>
 
