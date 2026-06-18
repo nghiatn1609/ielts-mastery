@@ -1,0 +1,20 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "IELTS Mastery",
+        "supportEmail": "imheuu1810@gmail.com",
+        "authorizedDomains": [
+          "localhost",
+          "127.0.0.1",
+          "ielts-mastery-b0414.firebaseapp.com",
+          "ielts-mastery-b0414.web.app"
+        ]
+      }
+    }
+  }
+}
