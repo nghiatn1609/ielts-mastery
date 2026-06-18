@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getAI } from "firebase/ai";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   projectId: "ielts-mastery-b0414",
@@ -19,3 +20,4 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const ai = getAI(app);
+export const storage = getStorage(app);

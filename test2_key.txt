@@ -1,0 +1,88 @@
+VOL 9 TEST 2 KEY
+
+PASSAGE 1
+
+PASSAGE 2
+
+PASSAGE 3
+
+father
+
+music
+
+secretary
+
+steel
+
+prices
+
+banks
+
+projects
+
+TRUE
+
+TRUE
+
+FALSE
+
+NOT GIVEN
+
+TRUE 
+
+TRUE
+
+E
+
+H
+
+semantic equivalence
+
+purpose
+
+stylistic features
+
+content
+
+E 
+
+B
+
+D
+
+C
+
+24-26. A, B, D
+
+D wood
+
+C boats
+
+A poverty
+
+B agriculture
+
+YES
+
+NOT GIVEN
+
+NOT GIVEN
+
+NO 
+
+YES
+
+C
+
+B
+
+A
+
+A
+
+B
+
+
+
+VOL 9 TEST 2 EXPLANATION
+

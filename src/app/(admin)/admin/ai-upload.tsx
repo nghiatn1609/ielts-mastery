@@ -3,8 +3,9 @@
 import { useState } from "react";
 import * as mammoth from "mammoth";
 import { getGenerativeModel } from "firebase/ai";
-import { ai, db } from "@/lib/firebase/config";
+import { ai, db, storage } from "@/lib/firebase/config";
 import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Loader2, Upload, FileText, CheckCircle2, Headphones, BookOpen } from "lucide-react";
 
 export default function AIUploadComponent() {
@@ -24,26 +25,14 @@ export default function AIUploadComponent() {
     try {
       let audioUrl = "";
       if (testType === 'LISTENING' && audioFile) {
-        setStatus("Đang upload file Audio lên server nội bộ...");
+        setStatus("Đang upload file Audio lên Firebase Storage...");
         try {
-          const formData = new FormData();
-          formData.append("file", audioFile);
+          const uniqueName = `${Date.now()}_${audioFile.name.replace(/\s+/g, '_')}`;
+          const storageRef = ref(storage, `uploads/${uniqueName}`);
           
-          const uploadRes = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-          });
+          await uploadBytes(storageRef, audioFile);
+          audioUrl = await getDownloadURL(storageRef);
           
-          if (!uploadRes.ok) {
-            throw new Error(`Upload failed with status: ${uploadRes.status}`);
-          }
-          
-          const uploadData = await uploadRes.json();
-          if (uploadData.success) {
-            audioUrl = uploadData.url;
-          } else {
-            throw new Error(uploadData.error || "Lỗi không xác định khi upload");
-          }
         } catch (uploadErr) {
            console.error(uploadErr);
            alert("Lỗi upload Audio. Sẽ bỏ qua Audio.");
