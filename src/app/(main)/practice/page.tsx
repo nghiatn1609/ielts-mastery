@@ -10,6 +10,7 @@ import {
   Filter, Search, BookOpen, Headphones, PenTool, 
   Clock, Users, MessageSquare, ChevronDown, Loader2
 } from "lucide-react";
+import RequireAuth from "@/components/auth/RequireAuth";
 
 interface PassageItem {
   id: string; // "testId_passageIndex"
@@ -116,7 +117,7 @@ export default function PracticePage() {
   });
 
   return (
-    <>
+    <RequireAuth title="Đăng nhập để luyện tập" message="Bạn cần đăng nhập để chọn bài và lưu lịch sử làm bài.">
       <div className="practice-layout flex h-screen bg-base">
         {/* Sidebar */}
         <aside className="practice-sidebar glass">
@@ -418,6 +419,6 @@ export default function PracticePage() {
           </div>
         </div>
       )}
-    </>
+    </RequireAuth>
   );
 }

@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { useAuth } from "@/context/AuthContext";
-import { Loader2, LogIn, TrendingUp, BookOpen, Target } from "lucide-react";
+import { Loader2, TrendingUp, BookOpen, Target } from "lucide-react";
 import Link from "next/link";
+import RequireAuth from "@/components/auth/RequireAuth";
 
 interface TestResult {
   id: string;
@@ -74,30 +75,7 @@ export default function AnalyticsPage() {
     return () => { isMounted = false; };
   }, [user]);
 
-  if (authLoading || loading) {
-    return (
-      <div style={{ display: 'flex', height: '60vh', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-        <Loader2 className="animate-spin" style={{ color: 'var(--primary)' }} size={48} />
-      </div>
-    );
-  }
 
-  if (!user) {
-    return (
-      <div className="container" style={{ padding: '5rem 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <div className="glass" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '450px', width: '100%', borderRadius: 'var(--radius-xl)' }}>
-          <BookOpen size={64} style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }} />
-          <h2 className="h2 mb-4">Đăng nhập để xem thống kê</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
-            Bạn cần đăng nhập để lưu trữ và phân tích kết quả học tập của mình.
-          </p>
-          <Link href="/" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <LogIn size={20} /> Về trang chủ
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const totalTests = results.length;
   const averageScore = totalTests > 0 
@@ -123,6 +101,7 @@ export default function AnalyticsPage() {
   })).sort((a, b) => a.percentage - b.percentage); // Lowest percentage first
 
   return (
+    <RequireAuth title="Đăng nhập để xem thống kê" message="Bạn cần đăng nhập để lưu trữ và phân tích kết quả học tập của mình.">
     <div className="container" style={{ padding: '3rem 1.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
         <div>
@@ -258,5 +237,6 @@ export default function AnalyticsPage() {
         </div>
       )}
     </div>
+    </RequireAuth>
   );
 }

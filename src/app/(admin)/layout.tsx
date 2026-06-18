@@ -1,5 +1,6 @@
 import { LayoutDashboard, FileUp, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
+import RequireAuth from "@/components/auth/RequireAuth";
 import "../globals.css";
 
 export const metadata = {
@@ -13,7 +14,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="admin-layout">
+    <RequireAuth title="Khu vực Quản trị" message="Bạn cần đăng nhập tài khoản Admin để truy cập khu vực này.">
+      <div className="admin-layout">
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
@@ -52,5 +54,6 @@ export default function AdminLayout({
         </div>
       </main>
     </div>
+    </RequireAuth>
   );
 }
