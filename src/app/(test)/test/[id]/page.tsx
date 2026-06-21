@@ -242,9 +242,46 @@ export default function TestPage() {
         
         // Show toolbar via direct DOM manipulation to prevent React re-render
         if (toolbarRef.current) {
+          let toolbarLeft = rect.left + rect.width / 2;
+          const toolbarWidth = 220; // approximate width of toolbar
+          const padding = 10;
+          let arrowLeft = '50%';
+          
+          if (toolbarLeft - toolbarWidth / 2 < padding) {
+              const shift = (toolbarWidth / 2) - toolbarLeft + padding;
+              toolbarLeft = toolbarWidth / 2 + padding;
+              arrowLeft = `calc(50% - ${shift}px)`;
+          } else if (toolbarLeft + toolbarWidth / 2 > window.innerWidth - padding) {
+              const shift = toolbarLeft + toolbarWidth / 2 - (window.innerWidth - padding);
+              toolbarLeft = window.innerWidth - padding - toolbarWidth / 2;
+              arrowLeft = `calc(50% + ${shift}px)`;
+          }
+
+          let toolbarTop = rect.top;
+          let translateY = '-110%';
+          let arrowBottom = '-6px';
+          let arrowTop = 'auto';
+          let borderTop = '6px solid var(--border)';
+          let borderBottom = 'none';
+
+          if (rect.top < 50) {
+              toolbarTop = rect.bottom + 10;
+              translateY = '0';
+              arrowBottom = 'auto';
+              arrowTop = '-6px';
+              borderTop = 'none';
+              borderBottom = '6px solid var(--border)';
+          }
+
           toolbarRef.current.style.display = 'flex';
-          toolbarRef.current.style.top = `${rect.top}px`;
-          toolbarRef.current.style.left = `${rect.left + rect.width / 2}px`;
+          toolbarRef.current.style.top = `${toolbarTop}px`;
+          toolbarRef.current.style.left = `${toolbarLeft}px`;
+          toolbarRef.current.style.setProperty('--toolbar-translate-y', translateY);
+          toolbarRef.current.style.setProperty('--arrow-left', arrowLeft);
+          toolbarRef.current.style.setProperty('--arrow-bottom', arrowBottom);
+          toolbarRef.current.style.setProperty('--arrow-top', arrowTop);
+          toolbarRef.current.style.setProperty('--arrow-border-top', borderTop);
+          toolbarRef.current.style.setProperty('--arrow-border-bottom', borderBottom);
         }
       } else {
         hideToolbar();

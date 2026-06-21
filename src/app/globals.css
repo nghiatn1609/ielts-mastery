@@ -423,19 +423,21 @@ header {
   display: flex;
   gap: 0.5rem;
   box-shadow: var(--shadow-md);
-  transform: translate(-50%, -110%);
+  transform: translate(-50%, var(--toolbar-translate-y, -110%));
   animation: scale-up 0.15s ease-out;
 }
 
 .highlight-toolbar::after {
   content: '';
   position: absolute;
-  bottom: -6px;
-  left: 50%;
+  bottom: var(--arrow-bottom, -6px);
+  top: var(--arrow-top, auto);
+  left: var(--arrow-left, 50%);
   transform: translateX(-50%);
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid var(--border);
+  border-top: var(--arrow-border-top, 6px solid var(--border));
+  border-bottom: var(--arrow-border-bottom, none);
 }
 
 .highlight-color-btn {
