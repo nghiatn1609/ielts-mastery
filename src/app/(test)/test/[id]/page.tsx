@@ -266,20 +266,34 @@ export default function TestPage() {
       const walker = document.createTreeWalker(ancestor, NodeFilter.SHOW_TEXT, null);
       let n = walker.nextNode();
       while (n) {
-        // More robust intersection check for Safari
+        if (!n.nodeValue || n.nodeValue.trim().length === 0) {
+          n = walker.nextNode();
+          continue;
+        }
+
         let intersects = false;
+        
         try {
-          if (range.intersectsNode(n)) {
-            intersects = true;
-          } else {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount > 0) {
+            intersects = sel.containsNode(n, true);
+          }
+        } catch (e) {}
+
+        if (!intersects) {
+          try {
             const nodeRange = document.createRange();
             nodeRange.selectNodeContents(n);
-            const startBeforeNodeEnd = range.compareBoundaryPoints(Range.END_TO_START, nodeRange) === -1;
-            const endAfterNodeStart = range.compareBoundaryPoints(Range.START_TO_END, nodeRange) === 1;
+            const startBeforeNodeEnd = range.compareBoundaryPoints(Range.END_TO_START, nodeRange) <= 0;
+            const endAfterNodeStart = range.compareBoundaryPoints(Range.START_TO_END, nodeRange) >= 0;
             intersects = startBeforeNodeEnd && endAfterNodeStart;
-          }
-        } catch (e) {
-          // Fallback if compareBoundaryPoints fails
+          } catch (e) {}
+        }
+
+        if (!intersects) {
+          try {
+            intersects = range.intersectsNode(n);
+          } catch (e) {}
         }
         
         if (intersects) {
@@ -289,7 +303,7 @@ export default function TestPage() {
       }
       
       if (nodes.length === 0) {
-          console.warn("No text nodes found to highlight in the selected range.");
+          console.warn("No text nodes found to highlight in the selected range.", range);
       }
       return nodes;
     } catch (e: any) {
