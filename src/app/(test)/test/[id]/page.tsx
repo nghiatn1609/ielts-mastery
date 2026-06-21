@@ -14,7 +14,17 @@ const MemoizedPassageContent = React.memo(({ html }: { html: string }) => {
   return (
     <div 
       className="passage-html-content"
-      style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--text-primary)' }}
+      style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-primary)' }}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}, (prevProps, nextProps) => prevProps.html === nextProps.html);
+
+const MemoizedQuestionHtml = React.memo(({ html }: { html: string }) => {
+  return (
+    <div 
+      className="question-html-content"
+      style={{ fontSize: '1.05rem', lineHeight: 1.6, color: 'var(--text-primary)', marginBottom: '1.5rem' }}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -622,11 +632,7 @@ export default function TestPage() {
                 {passage.questionGroups && passage.questionGroups.length > 0 ? (
                   passage.questionGroups.map((group: any, gIndex: number) => (
                     <div key={`g-${pIndex}-${gIndex}`} style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'var(--bg-base)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-                      <div 
-                        className="question-html-content"
-                        style={{ fontSize: '1.05rem', lineHeight: 1.6, color: 'var(--text-primary)', marginBottom: '1.5rem' }}
-                        dangerouslySetInnerHTML={{ __html: group.html }}
-                      />
+                      <MemoizedQuestionHtml html={group.html} />
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem', borderTop: '1px dashed var(--border)', paddingTop: '1.5rem' }}>
                         {passage.questions.filter((q: any) => q.number >= group.start && q.number <= group.end).map((q: any) => {
                           const expectedAnswer = (q.correctAnswer || q.answer || "").trim().toLowerCase();
