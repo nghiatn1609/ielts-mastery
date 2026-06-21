@@ -265,17 +265,31 @@ export default function TestPage() {
 
       const walker = document.createTreeWalker(ancestor, NodeFilter.SHOW_TEXT, null);
       let n = walker.nextNode();
-      let totalTextNodes = 0;
       while (n) {
-        totalTextNodes++;
-        if (range.intersectsNode(n)) {
+        // More robust intersection check for Safari
+        let intersects = false;
+        try {
+          if (range.intersectsNode(n)) {
+            intersects = true;
+          } else {
+            const nodeRange = document.createRange();
+            nodeRange.selectNodeContents(n);
+            const startBeforeNodeEnd = range.compareBoundaryPoints(Range.END_TO_START, nodeRange) === -1;
+            const endAfterNodeStart = range.compareBoundaryPoints(Range.START_TO_END, nodeRange) === 1;
+            intersects = startBeforeNodeEnd && endAfterNodeStart;
+          }
+        } catch (e) {
+          // Fallback if compareBoundaryPoints fails
+        }
+        
+        if (intersects) {
             nodes.push(n);
         }
         n = walker.nextNode();
       }
       
       if (nodes.length === 0) {
-          alert(`Debug: Ancestor is ${ancestor.nodeName}. Total text nodes found: ${totalTextNodes}. Range start: ${range.startContainer.nodeName}, end: ${range.endContainer.nodeName}`);
+          console.warn("No text nodes found to highlight in the selected range.");
       }
       return nodes;
     } catch (e: any) {
@@ -321,7 +335,7 @@ export default function TestPage() {
       const range = currentRangeRef.current;
       if (!range) { alert("No range selected!"); return; }
       const nodes = getTextNodesInRange(range);
-      if (nodes.length === 0) { alert("No text nodes found to highlight!"); return; }
+      if (nodes.length === 0) { console.warn("No text nodes found to highlight!"); return; }
       nodes.forEach(node => wrapTextNode(node, range, 'highlight', colorCode));
       window.getSelection()?.removeAllRanges();
       hideToolbar();
@@ -335,7 +349,7 @@ export default function TestPage() {
       const range = currentRangeRef.current;
       if (!range) { alert("No range selected!"); return; }
       const nodes = getTextNodesInRange(range);
-      if (nodes.length === 0) { alert("No text nodes found to bold!"); return; }
+      if (nodes.length === 0) { console.warn("No text nodes found to bold!"); return; }
       nodes.forEach(node => wrapTextNode(node, range, 'bold'));
       window.getSelection()?.removeAllRanges();
       hideToolbar();
